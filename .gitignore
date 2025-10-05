@@ -1,0 +1,80 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# macOS Finder tags
+*.swp
+.Spotlight-V100
+.Trashes
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs (IntelliJ, WebStorm, PyCharm, etc.)
+.idea/
+*.iml
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.env
+.venv/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Go
+bin/
+vendor/
+*.test
+
+# Rust
+target/
+
+# Logs
+*.log
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+
+# Helm / Kubernetes
+*.tgz
+charts/
+release.yaml
+
+# Docker
+*.env
+.env.*
+.dockerignore
+docker-compose.override.yml
+
+# Misc
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# OS metadata
+ehthumbs.db
+Thumbs.db
+Desktop.ini
