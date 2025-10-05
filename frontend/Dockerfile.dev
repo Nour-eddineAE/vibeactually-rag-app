@@ -1,0 +1,20 @@
+# Stage: Dev mode for Vue app
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all frontend source files
+COPY . .
+
+# Expose dev server port
+EXPOSE 5173
+
+# Start dev server with hot reload
+CMD ["npm", "run", "dev"]

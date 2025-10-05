@@ -1,0 +1,31 @@
+# Stage 1: Build the Vue app
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# Copy package files for dependency installation
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Build the Vue app
+RUN npm run build
+
+# Stage 2: Serve the built app
+FROM node:18-alpine AS serve
+
+# Install a static server globally
+RUN npm install -g serve
+
+# Copy built files from the build stage
+COPY --from=build /app/dist /app
+
+# Expose default Vue.js port (5173 is dev mode; for production we'll use 5556 here)
+EXPOSE 5556
+
+# Serve the built app
+CMD ["serve", "-s", "/app", "-l", "5556"]

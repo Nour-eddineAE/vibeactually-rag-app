@@ -1,0 +1,12 @@
+{
+    //...
+    "include": [
+        // ...
+        "auto-imports.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+        // auto-imports.d.ts should not be inside exclude field
+    ]
+    //...
+}
