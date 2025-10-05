@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+    postgres:
+        image: postgres:15
+        container_name: rag_postgres
+        restart: always
+        environment:
+            POSTGRES_USER: ${DATABASE_USER}
+            POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+            POSTGRES_DB: ${DATABASE_NAME}
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+            - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: rag_pgadmin
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+        ports:
+            - "8080:80"
+        volumes:
+            - pgadmin_data:/var/lib/pgadmin
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+    backend:
+        build:
+            context: ./backend
+        container_name: rag_backend
+        restart: always
+        depends_on:
+            postgres:
+                condition: service_healthy
+        environment:
+            DATABASE_URL: ${DATABASE_URL}
+            OPENAI_API_KEY: ${OPENAI_API_KEY}
+        ports:
+            - "4000:4000"
+        command: npm run start
+
+    frontend-prod:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.prod
+        container_name: rag_frontend_prod
+        restart: always
+        depends_on:
+            backend:
+                condition: service_started
+        ports:
+            - "5556:5556"
+        profiles: ["prod"]
+
+    frontend-dev:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.dev
+        container_name: rag_frontend_dev
+        restart: always
+        depends_on:
+            backend:
+                condition: service_started
+        ports:
+            - "5173:5173"
+        profiles: ["dev"]
+
+volumes:
+    pgdata:
+    pgadmin_data:
