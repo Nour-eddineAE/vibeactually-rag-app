@@ -1,36 +1,39 @@
-import { parse, serialize } from "cookie-es";
-import { destr } from "destr";
+import { parse, serialize } from 'cookie-es'
+import { destr } from 'destr'
 
 const CookieDefaults = {
-  path: "/",
+  path: '/',
   watch: true,
-  decode: (val) => destr(decodeURIComponent(val)),
-  encode: (val) =>
-    encodeURIComponent(typeof val === "string" ? val : JSON.stringify(val)),
-};
+  decode: val => destr(decodeURIComponent(val)),
+  encode: val =>
+    encodeURIComponent(typeof val === 'string' ? val : JSON.stringify(val)),
+}
 
-export const useCookie = (name, _opts) => {
-  const opts = { ...CookieDefaults, ...(_opts || {}) };
+export function useCookie (name, _opts) {
+  const opts = { ...CookieDefaults, ..._opts }
 
-  const cookies = parse(document.cookie || "", opts);
+  // Read cookies (lint: allow direct document.cookie in this helper)
+
+  const cookies = parse(document.cookie || '', opts)
 
   const cookie = ref(
-    cookies[name] ??
-      (typeof opts.default === "function" ? opts.default() : opts.default)
-  );
+    cookies[name]
+    ?? (typeof opts.default === 'function' ? opts.default() : opts.default),
+  )
 
   if (opts.watch) {
     watch(cookie, () => {
-      document.cookie = serializeCookie(name, cookie.value, opts);
-    });
+      // eslint-disable-next-line unicorn/no-document-cookie
+      document.cookie = serializeCookie(name, cookie.value, opts)
+    })
   }
 
-  return cookie;
-};
+  return cookie
+}
 
-function serializeCookie(name, value, opts = {}) {
+function serializeCookie (name, value, opts = {}) {
   if (value === null || value === undefined) {
-    return serialize(name, "", { ...opts, maxAge: -1 });
+    return serialize(name, '', { ...opts, maxAge: -1 })
   }
-  return serialize(name, value, opts);
+  return serialize(name, value, opts)
 }

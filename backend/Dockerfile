@@ -1,5 +1,5 @@
 # Use a small, efficient Node image
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
 # Set working directory
 WORKDIR /app
@@ -7,8 +7,15 @@ WORKDIR /app
 # Copy package files first for caching
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install system libs expected by Prisma on Debian, then deps
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install
+
+# Copy Prisma schema early and generate client for container target
+COPY prisma ./prisma
+RUN npx prisma generate
 
 # Copy all backend source code
 COPY . .

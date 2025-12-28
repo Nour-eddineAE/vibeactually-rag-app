@@ -1,7 +1,7 @@
 <template>
-  <HelloWorld />
+  <ReadinessDashboard />
 </template>
 
 <script setup>
-  //
+//
 </script>

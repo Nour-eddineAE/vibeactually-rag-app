@@ -8,10 +8,17 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppFooter: typeof import('./src/components/AppFooter.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ChatComponent: typeof import('./src/components/ChatComponent.vue')['default']
+    CodeBlock: typeof import('./src/components/CodeBlock.vue')['default']
+    DoughnutChart: typeof import('./src/components/DoughnutChart.vue')['default']
+    EntityList: typeof import('./src/components/EntityList.vue')['default']
+    KpiCard: typeof import('./src/components/KpiCard.vue')['default']
+    NavBar: typeof import('./src/components/NavBar.vue')['default']
+    OverviewGauge: typeof import('./src/components/OverviewGauge.vue')['default']
+    ReadinessDashboard: typeof import('./src/components/ReadinessDashboard.vue')['default']
     ReadinessInput: typeof import('./src/components/ReadinessInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SectionCard: typeof import('./src/components/SectionCard.vue')['default']
   }
 }

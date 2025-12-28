@@ -1,17 +1,36 @@
--- Create schema if not exists
+-- Ensure public schema exists
 CREATE SCHEMA IF NOT EXISTS public;
 
--- Create members table
-CREATE TABLE IF NOT EXISTS public.members (
+-- =========================
+-- Prisma-aligned tables (quoted identifiers)
+-- =========================
+
+-- Teams table -> Prisma model "Team"
+CREATE TABLE IF NOT EXISTS "Team" (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT UNIQUE NOT NULL
 );
 
--- Create tasks table
-CREATE TABLE IF NOT EXISTS public.tasks (
+-- Members table -> Prisma model "Member"
+CREATE TABLE IF NOT EXISTS "Member" (
     id SERIAL PRIMARY KEY,
-    member_id INT REFERENCES public.members(id),
-    name TEXT NOT NULL,
-    due_date DATE NOT NULL,
-    overdue BOOLEAN DEFAULT FALSE
+    name TEXT UNIQUE NOT NULL,
+    "teamId" INTEGER REFERENCES "Team"(id) ON DELETE SET NULL
 );
+
+-- Index matching Prisma schema name
+CREATE INDEX IF NOT EXISTS idx_members_team_id ON "Member"("teamId");
+
+-- Tasks table -> Prisma model "Task"
+CREATE TABLE IF NOT EXISTS "Task" (
+    id SERIAL PRIMARY KEY,
+    "memberId" INTEGER NOT NULL REFERENCES "Member"(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    "dueDate" DATE NOT NULL,
+    overdue BOOLEAN DEFAULT FALSE,
+    CONSTRAINT unique_task_per_member UNIQUE ("memberId", name)
+);
+
+-- Indexes matching Prisma schema names
+CREATE INDEX IF NOT EXISTS idx_tasks_member_id ON "Task"("memberId");
+CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON "Task"("dueDate");
